@@ -22,6 +22,7 @@ public class TestAdmin {
       wd.get("http://localhost/litecart/admin/");
       wd.findElement(By.name("username")).sendKeys(adminCred);
       wd.findElement(By.name("password")).sendKeys(adminCred);
+      wd.findElement(By.name("login")).click();
    }
    
    @After

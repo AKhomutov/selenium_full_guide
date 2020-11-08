@@ -23,7 +23,6 @@ public class FirstTest {
    public void firstTest() {
       wd.get("https://www.google.com/");
       wd.findElement(By.name("q")).sendKeys("hello");
-      wait.until()
       wd.findElement(By.name("btnK")).click();
       wait.until(titleIs("hello - Пошук Google"));
    }

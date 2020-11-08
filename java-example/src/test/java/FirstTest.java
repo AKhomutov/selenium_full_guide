@@ -22,9 +22,6 @@ public class FirstTest {
    @Test
    public void firstTest() {
       wd.get("https://www.google.com/");
-      wd.findElement(By.name("q")).sendKeys("hello");
-      wd.findElement(By.name("btnK")).click();
-      wait.until(titleIs("hello - Пошук Google"));
    }
    
    @After

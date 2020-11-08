@@ -3,6 +3,9 @@ package tests;
 import javafx.scene.paint.Color;
 import org.junit.Test;
 import org.openqa.selenium.By;
+import org.openqa.selenium.support.ui.ExpectedConditions;
+
+import java.io.File;
 
 import static javafx.scene.paint.Color.GREY;
 import static javafx.scene.paint.Color.RED;
@@ -48,6 +51,43 @@ public class TestProducts extends TestBase {
       assertTextIsCrossedOut(productPageRegularPrice);
       assertElementColorIs(getColorFrom(productPageRegularPrice), GREY);
       assert getFontSize(productPageRegularPrice) < getFontSize(productPageCampaignPrice);
+   }
+   
+   @Test
+   public void testCreateNewProduct() {
+      loginAsAdmin();
+      clickOnLeftSectionMenuWithName("Catalog");
+      click(By.linkText("Add New Product"));
+      click(By.xpath("//input[@name='status'][@value=1]"));
+      typeTextIn(By.name("name[en]"), "Bloodborne Duck");
+      typeTextIn(By.name("code"), "TEST");
+      click(By.xpath("//input[@value='1-3']"));
+      typeTextIn(By.name("quantity"), "500");
+      String path = new File("src/test/resources/bloodborne_duck.png").getAbsolutePath();
+      typeTextIn(By.name("new_images[]"), path);
+      typeTextIn(By.name("date_valid_from"), "04071992");
+      typeTextIn(By.name("date_valid_to"), "01012999");
+      click(By.linkText("Information"));
+      click(By.name("manufacturer_id"));
+      selectDropdownOptionByIndex(By.cssSelector("select[name='manufacturer_id']"), 1);
+      typeTextIn(By.name("keywords"), "lol");
+      typeTextIn(By.name("short_description[en]"), "kek");
+      typeTextIn(By.cssSelector(".trumbowyg-editor"), "A hunter must hunt");
+      typeTextIn(By.name("head_title[en]"), "head title");
+      typeTextIn(By.name("meta_description[en]"), "meta description");
+      click(By.linkText("Prices"));
+      typeTextIn(By.name("purchase_price"), "100");
+      click(By.name("purchase_price_currency_code"));
+      selectDropdownOptionByIndex(By.cssSelector("select[name='purchase_price_currency_code']"), 1);
+      typeTextIn(By.name("prices[USD]"), "100");
+      typeTextIn(By.name("prices[EUR]"), "89");
+      click(By.name("save"));
+      defaultWait(By.linkText("Bloodborne Duck"));
+      click(By.linkText("Bloodborne Duck"));
+      click(By.name("delete"));
+      wait.until(ExpectedConditions.alertIsPresent());
+      wd.switchTo().alert().accept();
+      wait.until(ExpectedConditions.presenceOfElementLocated(By.linkText("Rubber Ducks")));
    }
    
    private void assertTextIsCrossedOut(By by) {

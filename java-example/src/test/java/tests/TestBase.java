@@ -6,6 +6,7 @@ import org.openqa.selenium.By;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.chrome.ChromeDriver;
 import org.openqa.selenium.support.ui.ExpectedConditions;
+import org.openqa.selenium.support.ui.Select;
 import org.openqa.selenium.support.ui.WebDriverWait;
 
 import java.util.Random;
@@ -37,12 +38,20 @@ public class TestBase {
    }
    
    void click(By by) {
+      defaultWait(by);
       wd.findElement(by).click();
    }
    
    protected void typeTextIn(By by, String text) {
+      defaultWait(by);
       wd.findElement(by).clear();
       wd.findElement(by).sendKeys(text);
+   }
+   
+   protected void selectDropdownOptionByIndex(By by, int index) {
+      defaultWait(by);
+      Select option = new Select(wd.findElement(by));
+      option.selectByIndex(index);
    }
    
    void loginAsAdmin() {

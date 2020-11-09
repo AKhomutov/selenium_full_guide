@@ -3,13 +3,16 @@ package tests;
 import javafx.scene.paint.Color;
 import org.junit.Test;
 import org.openqa.selenium.By;
+import org.openqa.selenium.WebElement;
 import org.openqa.selenium.support.ui.ExpectedConditions;
 
 import java.io.File;
+import java.util.List;
 
 import static javafx.scene.paint.Color.GREY;
 import static javafx.scene.paint.Color.RED;
 import static org.junit.Assert.assertEquals;
+import static org.openqa.selenium.support.ui.ExpectedConditions.stalenessOf;
 
 public class TestProducts extends TestBase {
    
@@ -88,6 +91,28 @@ public class TestProducts extends TestBase {
       wait.until(ExpectedConditions.alertIsPresent());
       wd.switchTo().alert().accept();
       wait.until(ExpectedConditions.presenceOfElementLocated(By.linkText("Rubber Ducks")));
+   }
+   
+   @Test
+   public void testAddProductsToShoppingCartAndRemoveThem() {
+      WebElement quantity;
+      for (int i = 0; i < 3; i++) {
+         wd.get("http://localhost/litecart/");
+         List<WebElement> ducks = wd.findElements(By.cssSelector("li.product"));
+         WebElement firstDuck = ducks.get(0);
+         firstDuck.click();
+         quantity = wd.findElement(By.cssSelector("span.quantity"));
+         if (wd.findElements(By.name("options[Size]")).size() == 1) {
+            selectDropdownOptionByIndex(By.name("options[Size]"), 1);
+         }
+         click(By.name("add_cart_product"));
+         wait.until(ExpectedConditions.textToBe(By.cssSelector("span.quantity"), Integer.parseInt(quantity.getText()) + 1 + ""));
+      }
+      click(By.xpath("//a[contains(.,'Checkout »')]"));
+      while (wd.findElements(By.xpath("//*[@id='box-checkout-summary']")).size() != 0) {
+         click(By.name("remove_cart_item"));
+         wait.until(stalenessOf(wd.findElement(By.xpath("//*[@id='box-checkout-summary']"))));
+      }
    }
    
    private void assertTextIsCrossedOut(By by) {

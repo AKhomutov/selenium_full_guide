@@ -25,6 +25,8 @@ public class ShoppingCartPage extends HelperBase {
    @FindBy(name = "remove_cart_item")
    private WebElement buttonRemove;
    
+   private By tableOrderSummary = By.xpath("//*[@id='box-checkout-summary']");
+   
    public String getItemsInCartQuantity() {
       return labelItemsInCartQuantity.getText();
    }
@@ -42,10 +44,10 @@ public class ShoppingCartPage extends HelperBase {
    }
    
    public boolean orderSummaryIsPresent() {
-      return wd.findElements(By.xpath("//*[@id='box-checkout-summary']")).size() != 0;
+      return wd.findElements(tableOrderSummary).size() != 0;
    }
    
    public void orderSummaryIsAbsent() {
-      wait.until(stalenessOf(wd.findElement(By.xpath("//*[@id='box-checkout-summary']"))));
+      wait.until(stalenessOf(wd.findElement(tableOrderSummary)));
    }
 }

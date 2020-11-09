@@ -1,9 +1,11 @@
 package tests;
 
+import com.google.common.collect.Lists;
 import com.google.common.collect.Ordering;
 import org.junit.Test;
 import org.openqa.selenium.By;
 import org.openqa.selenium.WebElement;
+import org.openqa.selenium.logging.LogEntry;
 import org.openqa.selenium.support.ui.ExpectedConditions;
 
 import java.util.ArrayList;
@@ -11,6 +13,7 @@ import java.util.List;
 import java.util.Set;
 
 import static org.junit.Assert.assertTrue;
+import static org.openqa.selenium.support.ui.ExpectedConditions.titleIs;
 
 public class TestAdmin extends TestBase {
    
@@ -107,6 +110,35 @@ public class TestAdmin extends TestBase {
          wd.close();
          wd.switchTo().window(mainWindowBefore);
          wait.until((ExpectedConditions.titleIs("Edit Country | My Store")));
+      }
+   }
+   
+   @Test
+   public void testLogs() {
+      loginAsAdmin();
+      clickOnLeftSectionMenuWithName("Catalog");
+      wd.findElement(By.linkText("Rubber Ducks")).click();
+      List<String> listItems = Lists.newArrayList();
+      List<WebElement> duckElements = wd.findElements(By.cssSelector("tbody tr.row"));
+      for (WebElement duckElement : duckElements) {
+         if (duckElement.findElements(By.cssSelector("td img")).size() > 0) {
+            listItems.add(duckElement.getText());
+         }
+      }
+      boolean checkLogs;
+      for (String item : listItems) {
+         wd.findElement(By.linkText(item)).click();
+         wait.until(titleIs("Edit Product: " + item + " | My Store"));
+         System.out.println("Product name - \"" + item + "\": ");
+         checkLogs = true;
+         for (LogEntry l : wd.manage().logs().get("browser").getAll()) {
+            checkLogs = false;
+            System.out.println(l + "\n----------");
+         }
+         if (checkLogs) {
+            System.out.println("empty log (no errors);\n----------");
+         }
+         wd.navigate().back();
       }
    }
    

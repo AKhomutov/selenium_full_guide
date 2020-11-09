@@ -4,9 +4,11 @@ import com.google.common.collect.Ordering;
 import org.junit.Test;
 import org.openqa.selenium.By;
 import org.openqa.selenium.WebElement;
+import org.openqa.selenium.support.ui.ExpectedConditions;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Set;
 
 import static org.junit.Assert.assertTrue;
 
@@ -78,6 +80,33 @@ public class TestAdmin extends TestBase {
             assertTrue(geoZonesAreSorted);
          }
          wd.navigate().back();
+      }
+   }
+   
+   @Test
+   public void testLinksAreOpenedInNewTab() {
+      loginAsAdmin();
+      clickOnLeftSectionMenuWithName("Countries");
+      click(iconPencil);
+      List<WebElement> links = wd.findElements(By.className("fa-external-link"));
+      int numberOfLinks = links.size();
+      for (int i = 0; i < numberOfLinks; i++) {
+         String mainWindowBefore = wd.getWindowHandle();
+         Set<String> allWindowsBefore = wd.getWindowHandles();
+         wd.findElements(By.className("fa-external-link")).get(i).click();
+         String mainWindowAfter;
+         Set<String> allWindowsAfter = wd.getWindowHandles();
+         allWindowsAfter.removeAll(allWindowsBefore);
+         mainWindowAfter = allWindowsAfter.iterator().next();
+         wd.switchTo().window(mainWindowAfter);
+         if (wd.findElements(By.xpath("//a[contains(@class, 'mw-wiki-logo')]")).size() != 0) {
+            wait.until(ExpectedConditions.urlContains("wiki"));
+         } else {
+            wait.until(ExpectedConditions.urlContains("informatica"));
+         }
+         wd.close();
+         wd.switchTo().window(mainWindowBefore);
+         wait.until((ExpectedConditions.titleIs("Edit Country | My Store")));
       }
    }
    

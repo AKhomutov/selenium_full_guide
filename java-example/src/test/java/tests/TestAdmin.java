@@ -12,6 +12,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
 
+import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 import static org.openqa.selenium.support.ui.ExpectedConditions.titleIs;
 
@@ -97,6 +98,7 @@ public class TestAdmin extends TestBase {
          String mainWindowBefore = wd.getWindowHandle();
          Set<String> allWindowsBefore = wd.getWindowHandles();
          wd.findElements(By.className("fa-external-link")).get(i).click();
+         wait.until(ExpectedConditions.numberOfWindowsToBe(allWindowsBefore.size() + 1));
          String mainWindowAfter;
          Set<String> allWindowsAfter = wd.getWindowHandles();
          allWindowsAfter.removeAll(allWindowsBefore);
@@ -109,7 +111,6 @@ public class TestAdmin extends TestBase {
          }
          wd.close();
          wd.switchTo().window(mainWindowBefore);
-         wait.until((ExpectedConditions.titleIs("Edit Country | My Store")));
       }
    }
    

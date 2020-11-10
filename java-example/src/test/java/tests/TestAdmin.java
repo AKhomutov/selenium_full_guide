@@ -12,7 +12,6 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
 
-import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 import static org.openqa.selenium.support.ui.ExpectedConditions.titleIs;
 
@@ -111,6 +110,7 @@ public class TestAdmin extends TestBase {
          }
          wd.close();
          wd.switchTo().window(mainWindowBefore);
+         wait.until((ExpectedConditions.titleIs("Edit Country | My Store")));
       }
    }
    
